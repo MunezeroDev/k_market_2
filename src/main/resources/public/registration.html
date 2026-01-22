@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration - KenyaMarket</title>
+    <link rel="stylesheet" href="registration.css">
+</head>
+<body>
+    <div class="registration-container">
+        <h1>You are registering as <span id="accountTypeDisplay">Buyer</span></h1>
+        <a href="#" class="update-account" id="updateAccountType">Update Account Type</a>
+
+        <div id="formMessage" class="form-message" style="display:none;"></div>
+        
+        <form id="registrationForm">
+            
+            <!-- Common fields for all account types -->
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" name="lastName" required>
+            </div>
+
+            <div class="form-group buyer-field">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phoneNumber">Phone Number</label>
+                <input type="tel" id="phoneNumber" name="phoneNumber" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="nationalId">National ID Number</label>
+                <input type="text" id="nationalId" name="nationalId" required>
+            </div>
+
+            <!-- Buyer-specific fields -->
+            <div class="form-group buyer-field">
+                <label for="deliveryLocation">Delivery Location</label>
+                <input type="text" id="deliveryLocation" name="deliveryLocation" required>
+            </div>
+
+            <!-- Seller-specific fields -->
+            <div class="form-group seller-field" style="display: none;">
+                <label for="businessName">Business Name</label>
+                <input type="text" id="businessName" name="businessName" required>
+            </div>
+
+            <div class="form-group seller-field" style="display: none;">
+                <label for="businessRegNumber">Business Registration Number</label>
+                <input type="text" id="businessRegNumber" name="businessRegNumber" required>
+            </div>
+
+            <div class="form-group seller-field" style="display: none;">
+                <label for="businessLocation">Business Location</label>
+                <input type="text" id="businessLocation" name="businessLocation" required>
+            </div>
+
+            <button type="submit" class="register-btn">Register</button>
+        </form>
+    </div>
+
+    <!-- Account Type Selection Modal -->
+    <div id="accountTypeModal" class="modal">
+        <div class="modal-content">
+            <h2>Choose Account Type</h2>
+            <div class="account-type-options">
+                <label class="account-option">
+                    <input type="radio" name="accountType" value="buyer" checked>
+                    <span>Buyer</span>
+                </label>
+                <label class="account-option">
+                    <input type="radio" name="accountType" value="seller">
+                    <span>Seller</span>
+                </label>
+                <label class="account-option">
+                    <input type="radio" name="accountType" value="both">
+                    <span>Buyer & Seller</span>
+                </label>
+            </div>
+            <button class="modal-btn" id="confirmAccountType">Continue</button>
+        </div>
+    </div>
+
+    <script src="registration.js"></script>
+</body>
+</html>
