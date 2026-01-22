@@ -1,17 +1,12 @@
 package com.kenyamarket.controllers;
 
 import com.kenyamarket.models.User;
-
+import com.kenyamarket.database.UserRepository;
 import io.javalin.http.Context;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RegistrationController {
-    
-    // In-memory storage for now (you'll replace this with a database later)
-    private static List<User> users = new ArrayList<>();
 
     public static void register(Context ctx) {
         try {
@@ -26,21 +21,22 @@ public class RegistrationController {
             }
             
             // Check if username already exists
-            if (userExists(user.getUsername())) {
+            if (UserRepository.userExists(user.getUsername())) {
                 ctx.status(409).json(createResponse(false, "Username already exists"));
                 return;
             }
             
-            // Save the user (in-memory for now)
-            users.add(user);
+            // Save the user to database
+            boolean saved = UserRepository.saveUser(user);
             
-            // Log the registration
-            System.out.println("New user registered: " + user);
-            System.out.println("Total users: " + users.size());
-            
-            // Send success response
-            ctx.status(201).json(createResponse(true, 
-                "Registration successful! Welcome " + user.getUsername()));
+            if (saved) {
+                System.out.println("✅ New user registered: " + user.getUsername());
+                ctx.status(201).json(createResponse(true, 
+                    "Registration successful! Welcome " + user.getUsername()));
+            } else {
+                ctx.status(500).json(createResponse(false, 
+                    "Failed to save user to database"));
+            }
             
         } catch (Exception e) {
             System.err.println("Registration error: " + e.getMessage());
@@ -93,11 +89,6 @@ public class RegistrationController {
         return null; // No errors
     }
     
-    private static boolean userExists(String username) {
-        return users.stream()
-                .anyMatch(u -> u.getUsername().equalsIgnoreCase(username));
-    }
-    
     private static Map<String, Object> createResponse(boolean success, String message) {
         Map<String, Object> response = new HashMap<>();
         response.put("success", success);
@@ -107,6 +98,6 @@ public class RegistrationController {
     
     // Method to get all users (for testing)
     public static void getAllUsers(Context ctx) {
-        ctx.json(users);
+        ctx.json(UserRepository.getAllUsers());
     }
 }
