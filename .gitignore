@@ -43,3 +43,6 @@ Thumbs.db
 *.zip
 *.tar.gz
 *.rar
+
+# Temporary files
+sql_workbench.md

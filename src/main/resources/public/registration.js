@@ -37,6 +37,21 @@ class RegistrationManager {
                 this.hideModal();
             }
         });
+
+        // Success modal buttons
+        document.getElementById('goToLogin').addEventListener('click', () => {
+            window.location.href = 'login.html';
+        });
+
+        document.getElementById('closeSuccess').addEventListener('click', () => {
+            this.hideSuccessModal();
+            this.form.reset();
+        });
+
+        // Error modal button
+        document.getElementById('closeError').addEventListener('click', () => {
+            this.hideErrorModal();
+        });
     }
 
     setAccountType(type) {
@@ -128,14 +143,26 @@ class RegistrationManager {
         this.hideModal();
     }
 
-    displayMessage(message, type = 'info') {
-        const messageBox = document.getElementById('formMessage');
+    showSuccessModal(message) {
+        const modal = document.getElementById('successModal');
+        const messageElement = document.getElementById('successMessage');
+        messageElement.textContent = message;
+        modal.classList.add('active');
+    }
 
-        if (!messageBox) return;
+    showErrorModal(message) {
+        const modal = document.getElementById('errorModal');
+        const messageElement = document.getElementById('errorMessage');
+        messageElement.textContent = message;
+        modal.classList.add('active');
+    }
 
-        messageBox.textContent = message;
-        messageBox.className = `form-message ${type}`;
-        messageBox.style.display = 'block';
+    hideSuccessModal() {
+        document.getElementById('successModal').classList.remove('active');
+    }
+
+    hideErrorModal() {
+        document.getElementById('errorModal').classList.remove('active');
     }
 
     handleSubmit() {
@@ -169,21 +196,35 @@ class RegistrationManager {
         })
         .then(response => response.json())
         .then(result => {
-           if (result.success) {
-                this.displayMessage(result.message || 
-                    `Registration submitted as ${this.currentAccountType}!`, 'success');
+            if (result.success) {
+                this.showSuccessModal(result.message || 
+                    `Registration successful! Welcome ${this.currentAccountType}!`);
             } else {
-                this.displayMessage(result.message || 
-                    'Registration failed.', 'error');
+                this.showErrorModal(result.message || 'Registration failed.');
             }
-
         })
         .catch(error => {
-          this.displayMessage(
-                'Registration failed. Please try again later.',
-                'error'
-            );
+            this.showErrorModal('Registration failed. Please try again later.');
         });
+
+        // .then(result => {
+        //    if (result.success) {
+        //         this.displayMessage(result.message || 
+        //             `Registration submitted as ${this.currentAccountType}!`, 'success');
+        //     } else {
+        //         this.displayMessage(result.message || 
+        //             'Registration failed.', 'error');
+        //     }
+
+        // })
+        // .catch(error => {
+        //   this.displayMessage(
+        //         'Registration failed. Please try again later.',
+        //         'error'
+        //     );
+        // });
+
+        
     }
 }
 
