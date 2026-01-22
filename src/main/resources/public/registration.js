@@ -64,7 +64,7 @@ class RegistrationManager {
                 this.setFieldsRequired(sellerFields, true);
                 break;
                 
-            case 'buyerseller':
+            case 'both':
                 this.showFields(buyerFields);
                 this.showFields(sellerFields);
                 this.setFieldsRequired(buyerFields, true);

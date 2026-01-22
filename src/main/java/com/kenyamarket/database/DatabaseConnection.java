@@ -27,36 +27,66 @@ public class DatabaseConnection {
 
     public static void initializeDatabase() {
         try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement()) {
+            Statement stmt = conn.createStatement()) {
 
-            // Create users table
-            String createTableSQL = """
-                CREATE TABLE IF NOT EXISTS users (
-                    id INT PRIMARY KEY AUTO_INCREMENT,
-                    account_type VARCHAR(50) NOT NULL,
-                    username VARCHAR(100) UNIQUE NOT NULL,
-                    last_name VARCHAR(100) NOT NULL,
+            // Create User table
+            String createUserTable = """
+                CREATE TABLE IF NOT EXISTS User (
+                    userId INT PRIMARY KEY AUTO_INCREMENT,
+                    userName VARCHAR(100) UNIQUE NOT NULL,
+                    lastName VARCHAR(100) NOT NULL,
                     email VARCHAR(150),
-                    phone_number VARCHAR(20) NOT NULL,
+                    phoneNo VARCHAR(20) NOT NULL,
                     password VARCHAR(255) NOT NULL,
-                    national_id VARCHAR(50) NOT NULL,
-                    delivery_location VARCHAR(255),
-                    business_name VARCHAR(150),
-                    business_reg_number VARCHAR(100),
-                    business_location VARCHAR(255),
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    nationalId VARCHAR(50) NOT NULL,
+                    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """;
 
-            stmt.execute(createTableSQL);
-            System.out.println("✅ Database table 'users' initialized");
+            // Create UserRole table
+            String createUserRoleTable = """
+                CREATE TABLE IF NOT EXISTS UserRole (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    userId INT NOT NULL,
+                    role ENUM('buyer', 'seller', 'admin') NOT NULL,
+                    FOREIGN KEY (userId) REFERENCES User(userId) ON DELETE CASCADE,
+                    UNIQUE KEY unique_user_role (userId, role)
+                )
+            """;
+
+            // Create BuyerProfile table
+            String createBuyerProfileTable = """
+                CREATE TABLE IF NOT EXISTS BuyerProfile (
+                    userId INT PRIMARY KEY,
+                    deliveryLocation VARCHAR(255) NOT NULL,
+                    FOREIGN KEY (userId) REFERENCES User(userId) ON DELETE CASCADE
+                )
+            """;
+
+            // Create SellerProfile table
+            String createSellerProfileTable = """
+                CREATE TABLE IF NOT EXISTS SellerProfile (
+                    userId INT PRIMARY KEY,
+                    businessName VARCHAR(150) NOT NULL,
+                    businessRegNumber VARCHAR(100) NOT NULL,
+                    businessLocation VARCHAR(255) NOT NULL,
+                    FOREIGN KEY (userId) REFERENCES User(userId) ON DELETE CASCADE
+                )
+            """;
+
+            stmt.execute(createUserTable);
+            stmt.execute(createUserRoleTable);
+            stmt.execute(createBuyerProfileTable);
+            stmt.execute(createSellerProfileTable);
+            
+            System.out.println("✅ Database tables initialized: User, UserRole, BuyerProfile, SellerProfile");
 
         } catch (SQLException e) {
             System.err.println("❌ Database initialization failed: " + e.getMessage());
             e.printStackTrace();
         }
     }
-
+    
     public static void testConnection() {
         try (Connection conn = getConnection()) {
             if (conn != null && !conn.isClosed()) {
