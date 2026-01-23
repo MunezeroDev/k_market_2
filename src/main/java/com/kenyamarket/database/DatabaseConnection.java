@@ -7,8 +7,8 @@ import java.sql.Statement;
 
 public class DatabaseConnection {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/kenyamarket";
-    private static final String DB_USER = "root";  // ← CHANGE THIS
-    private static final String DB_PASSWORD = "TryingJavalin$14db";  // ← CHANGE THIS
+    private static final String DB_USER = "root";  // 
+    private static final String DB_PASSWORD = "TryingJavalin$14db";  
     private static Connection connection = null;
 
     public static Connection getConnection() {

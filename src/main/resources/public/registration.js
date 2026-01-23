@@ -206,24 +206,6 @@ class RegistrationManager {
         .catch(error => {
             this.showErrorModal('Registration failed. Please try again later.');
         });
-
-        // .then(result => {
-        //    if (result.success) {
-        //         this.displayMessage(result.message || 
-        //             `Registration submitted as ${this.currentAccountType}!`, 'success');
-        //     } else {
-        //         this.displayMessage(result.message || 
-        //             'Registration failed.', 'error');
-        //     }
-
-        // })
-        // .catch(error => {
-        //   this.displayMessage(
-        //         'Registration failed. Please try again later.',
-        //         'error'
-        //     );
-        // });
-
         
     }
 }

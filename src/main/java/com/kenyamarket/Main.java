@@ -2,6 +2,7 @@ package com.kenyamarket;
 
 import com.kenyamarket.controllers.RegistrationController;
 import com.kenyamarket.database.DatabaseConnection;
+import com.kenyamarket.controllers.LoginController;
 import io.javalin.Javalin;
 
 public class Main {
@@ -11,6 +12,7 @@ public class Main {
         System.out.println("🔧 Initializing database...");
         DatabaseConnection.initializeDatabase();
         DatabaseConnection.testConnection();
+        LoginController loginController = new LoginController();
         
         Javalin app = Javalin.create(config -> {
             // Serve static files from resources/public
@@ -29,6 +31,7 @@ public class Main {
         // API Routes
         app.post("/api/register", RegistrationController::register);
         app.get("/api/users", RegistrationController::getAllUsers);
+        app.post("/api/login", loginController::handleLogin);
         
         // Root redirect
         app.get("/", ctx -> ctx.redirect("/registration.html"));

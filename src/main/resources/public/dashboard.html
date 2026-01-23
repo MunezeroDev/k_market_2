@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - KenyaMarket</title>
+</head>
+<body>
+    <h1>Welcome to Dashboard</h1>
+    <div id="userInfo"></div>
+    
+    <script>
+        // Retrieve user data from localStorage
+        const user = JSON.parse(localStorage.getItem('user'));
+        const roles = JSON.parse(localStorage.getItem('roles'));
+        
+        if (user && roles) {
+            const userInfoDiv = document.getElementById('userInfo');
+            userInfoDiv.innerHTML = `
+                <p>User: ${user.userName}</p>
+                <p>Email: ${user.email}</p>
+                <p>Role(s): ${roles.join(', ')}</p>
+            `;
+        } else {
+            // If no user data, redirect to login
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
