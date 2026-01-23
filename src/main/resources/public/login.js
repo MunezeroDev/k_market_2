@@ -15,16 +15,15 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: formData
+            body: formData,
+            credentials: 'include' // Important: include cookies in request
         });
         
         const resultString = await response.text();
         const loginResult = JSON.parse(resultString);
         
         if (loginResult.success) {
-            // Store user data and roles in localStorage
-            localStorage.setItem('user', JSON.stringify(loginResult.user));
-            localStorage.setItem('roles', JSON.stringify(loginResult.roles));
+            // No need to store in localStorage - session is in cookie now!
             
             // Show success modal
             document.getElementById('successMessage').textContent = 
