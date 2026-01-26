@@ -128,12 +128,9 @@ function closeCart() {
 function addToCart(productCard) {
     const productId = productCard.querySelector('.add-to-cart-btn').dataset.productId;
     const productName = productCard.querySelector('.product-name').textContent;
-    const priceText = productCard.querySelector('.product-price').textContent;
+    const price = parseFloat(productCard.querySelector('.product-price').dataset.price);
     const productImage = productCard.querySelector('.product-image img')?.src;
     const productDescription = productCard.querySelector('.product-specs').textContent;
-    
-    // Extract numeric price
-    const price = parseFloat(priceText.replace(/[^0-9.-]+/g, ''));
     
     // Check if product already in cart
     const existingProduct = cart.find(item => item.id === productId);
@@ -285,11 +282,254 @@ function removeFromCart(productId) {
     }
 }
 
+// function handleCheckout() {
+//     if (cart.length === 0) return;
+    
+//     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+//     alert(`Checkout - Total: Ksh. ${total.toLocaleString()}\n\nCheckout functionality coming soon!`);
+// }
+
 function handleCheckout() {
     if (cart.length === 0) return;
     
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    alert(`Checkout - Total: Ksh. ${total.toLocaleString()}\n\nCheckout functionality coming soon!`);
+    
+    // Close cart panel
+    closeCart();
+    
+    // Show payment method selection modal
+    showPaymentMethodModal(total);
+}
+
+function showPaymentMethodModal(total) {
+    // Create modal HTML
+    const modalHTML = `
+        <div id="paymentModal" class="modal active">
+            <div class="modal-content payment-modal">
+                <div class="modal-header">
+                    <h3>Choose Payment Method</h3>
+                    <button class="close-modal" onclick="closePaymentModal()">&times;</button>
+                </div>
+                <div class="payment-summary">
+                    <p>Total Amount: <strong>Ksh. ${total.toLocaleString()}</strong></p>
+                </div>
+                <div class="payment-methods">
+                    <button class="payment-method-btn" onclick="showMpesaForm(${total})">
+                        <div class="payment-icon">📱</div>
+                        <div class="payment-name">M-Pesa</div>
+                    </button>
+                    <button class="payment-method-btn" onclick="showPayPalForm(${total})">
+                        <div class="payment-icon">💳</div>
+                        <div class="payment-name">PayPal</div>
+                    </button>
+                    <button class="payment-method-btn" onclick="showCreditCardForm(${total})">
+                        <div class="payment-icon">💳</div>
+                        <div class="payment-name">Credit Card</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add modal to body
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+function closePaymentModal() {
+    const modal = document.getElementById('paymentModal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+function showMpesaForm(total) {
+    const formHTML = `
+        <div id="paymentFormModal" class="modal active">
+            <div class="modal-content payment-form-modal">
+                <div class="modal-header">
+                    <h3>M-Pesa Payment</h3>
+                    <button class="close-modal" onclick="closePaymentFormModal()">&times;</button>
+                </div>
+                <div class="payment-form">
+                    <p class="form-instruction">Enter your M-Pesa details</p>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="mpesaPhone" placeholder="07XX XXX XXX" required>
+                    </div>
+                    <div class="payment-total">
+                        <span>Amount to Pay:</span>
+                        <span class="amount">Ksh. ${total.toLocaleString()}</span>
+                    </div>
+                    <button class="submit-payment-btn" onclick="processMpesaPayment(${total})">
+                        Pay with M-Pesa
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    closePaymentModal();
+    document.body.insertAdjacentHTML('beforeend', formHTML);
+}
+
+function showPayPalForm(total) {
+    const formHTML = `
+        <div id="paymentFormModal" class="modal active">
+            <div class="modal-content payment-form-modal">
+                <div class="modal-header">
+                    <h3>PayPal Payment</h3>
+                    <button class="close-modal" onclick="closePaymentFormModal()">&times;</button>
+                </div>
+                <div class="payment-form">
+                    <p class="form-instruction">Enter your PayPal details</p>
+                    <div class="form-group">
+                        <label>PayPal Email</label>
+                        <input type="email" id="paypalEmail" placeholder="your-email@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>PayPal Password</label>
+                        <input type="password" id="paypalPassword" placeholder="Enter password" required>
+                    </div>
+                    <div class="payment-total">
+                        <span>Amount to Pay:</span>
+                        <span class="amount">Ksh. ${total.toLocaleString()}</span>
+                    </div>
+                    <button class="submit-payment-btn" onclick="processPayPalPayment(${total})">
+                        Pay with PayPal
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    closePaymentModal();
+    document.body.insertAdjacentHTML('beforeend', formHTML);
+}
+
+function showCreditCardForm(total) {
+    const formHTML = `
+        <div id="paymentFormModal" class="modal active">
+            <div class="modal-content payment-form-modal">
+                <div class="modal-header">
+                    <h3>Credit Card Payment</h3>
+                    <button class="close-modal" onclick="closePaymentFormModal()">&times;</button>
+                </div>
+                <div class="payment-form">
+                    <p class="form-instruction">Enter your card details</p>
+                    <div class="form-group">
+                        <label>Card Number</label>
+                        <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Expiry Date</label>
+                            <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5" required>
+                        </div>
+                        <div class="form-group">
+                            <label>CVV</label>
+                            <input type="text" id="cardCVV" placeholder="123" maxlength="3" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Cardholder Name</label>
+                        <input type="text" id="cardName" placeholder="John Doe" required>
+                    </div>
+                    <div class="payment-total">
+                        <span>Amount to Pay:</span>
+                        <span class="amount">Ksh. ${total.toLocaleString()}</span>
+                    </div>
+                    <button class="submit-payment-btn" onclick="processCreditCardPayment(${total})">
+                        Pay with Credit Card
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    closePaymentModal();
+    document.body.insertAdjacentHTML('beforeend', formHTML);
+}
+
+function closePaymentFormModal() {
+    const modal = document.getElementById('paymentFormModal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+function processMpesaPayment(total) {
+    const phone = document.getElementById('mpesaPhone').value;
+    
+    if (!phone) {
+        alert('Please enter your M-Pesa phone number');
+        return;
+    }
+    
+    // Simulate payment processing
+    closePaymentFormModal();
+    showPaymentSuccess('M-Pesa', total);
+}
+
+function processPayPalPayment(total) {
+    const email = document.getElementById('paypalEmail').value;
+    const password = document.getElementById('paypalPassword').value;
+    
+    if (!email || !password) {
+        alert('Please enter your PayPal credentials');
+        return;
+    }
+    
+    // Simulate payment processing
+    closePaymentFormModal();
+    showPaymentSuccess('PayPal', total);
+}
+
+function processCreditCardPayment(total) {
+    const cardNumber = document.getElementById('cardNumber').value;
+    const expiry = document.getElementById('cardExpiry').value;
+    const cvv = document.getElementById('cardCVV').value;
+    const name = document.getElementById('cardName').value;
+    
+    if (!cardNumber || !expiry || !cvv || !name) {
+        alert('Please fill in all card details');
+        return;
+    }
+    
+    // Simulate payment processing
+    closePaymentFormModal();
+    showPaymentSuccess('Credit Card', total);
+}
+
+function showPaymentSuccess(method, total) {
+    const successHTML = `
+        <div id="successModal" class="modal active">
+            <div class="modal-content success-modal">
+                <div class="success-icon">✓</div>
+                <h2>Payment Successful!</h2>
+                <div class="success-details">
+                    <p>Payment Method: <strong>${method}</strong></p>
+                    <p>Amount Paid: <strong>Ksh. ${total.toLocaleString()}</strong></p>
+                    <p class="success-message">Thank you for your purchase!</p>
+                </div>
+                <button class="close-success-btn" onclick="closeSuccessModal()">Close</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', successHTML);
+    
+    // Clear cart after successful payment
+    cart = [];
+    saveCart();
+    updateCartCount();
+    updateCartDisplay();
+}
+
+function closeSuccessModal() {
+    const modal = document.getElementById('successModal');
+    if (modal) {
+        modal.remove();
+    }
 }
 
 function saveCart() {
@@ -371,7 +611,7 @@ function createProductCard(product) {
         <div class="product-info">
             <h3 class="product-name">${product.productName}</h3>
             <p class="product-specs">${product.description}</p>
-            <p class="product-price">Ksh. ${parseFloat(product.price).toLocaleString()}</p>
+            <p class="product-price" data-price="${product.price}">Ksh. ${parseFloat(product.price).toLocaleString()}</p>
             <div class="product-rating">
                 <span>★★★★☆</span>
             </div>
