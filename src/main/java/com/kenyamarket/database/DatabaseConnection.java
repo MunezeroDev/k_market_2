@@ -74,12 +74,44 @@ public class DatabaseConnection {
                 )
             """;
 
+            // Create Product table
+            String createProductTable = """
+                CREATE TABLE IF NOT EXISTS Product (
+                    productId INT PRIMARY KEY AUTO_INCREMENT,
+                    sellerId INT NOT NULL,
+                    productName VARCHAR(255) NOT NULL,
+                    description TEXT NOT NULL,
+                    price DECIMAL(10, 2) NOT NULL,
+                    quantity INT NOT NULL DEFAULT 0,
+                    category VARCHAR(100),
+                    status ENUM('active', 'inactive', 'out_of_stock') DEFAULT 'active',
+                    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    FOREIGN KEY (sellerId) REFERENCES User(userId) ON DELETE CASCADE
+                )
+            """;
+
+                // Create ProductImage table
+            String createProductImageTable = """
+                CREATE TABLE IF NOT EXISTS ProductImage (
+                    imageId INT PRIMARY KEY AUTO_INCREMENT,
+                    productId INT NOT NULL,
+                    imageData LONGTEXT NOT NULL,
+                    isPrimary BOOLEAN DEFAULT FALSE,
+                    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (productId) REFERENCES Product(productId) ON DELETE CASCADE
+                )
+            """;
+
             stmt.execute(createUserTable);
             stmt.execute(createUserRoleTable);
             stmt.execute(createBuyerProfileTable);
             stmt.execute(createSellerProfileTable);
+            stmt.execute(createProductTable);
+            stmt.execute(createProductImageTable);
             
             // System.out.println("✅ Database tables initialized: User, UserRole, BuyerProfile, SellerProfile");
+            System.out.println("✅ Database tables initialized: User, UserRole, BuyerProfile, SellerProfile, Product, ProductImage");
 
         } catch (SQLException e) {
             // System.err.println("❌ Database initialization failed: " + e.getMessage());

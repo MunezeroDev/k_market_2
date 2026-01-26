@@ -78,19 +78,27 @@ function initializeCart() {
 }
 
 function addToCart(productCard) {
+    const productId = productCard.querySelector('.add-to-cart-btn').dataset.productId;
     const productName = productCard.querySelector('.product-name').textContent;
     const productPrice = productCard.querySelector('.product-price').textContent;
     const productImage = productCard.querySelector('.product-image img')?.src;
     
-    const product = {
-        id: Date.now(),
-        name: productName,
-        price: productPrice,
-        image: productImage,
-        quantity: 1
-    };
+    // Check if product already in cart
+    const existingProduct = cart.find(item => item.id === productId);
     
-    cart.push(product);
+    if (existingProduct) {
+        existingProduct.quantity += 1;
+    } else {
+        const product = {
+            id: productId,
+            name: productName,
+            price: productPrice,
+            image: productImage,
+            quantity: 1
+        };
+        cart.push(product);
+    }
+    
     saveCart();
     updateCartCount();
     
@@ -117,11 +125,17 @@ function showCartModal() {
 // ==================== PRODUCTS LOADING ====================
 async function loadProducts() {
     try {
-        // In real app, fetch from API
-        // const response = await fetch('/api/products');
-        // allProducts = await response.json();
+        const response = await fetch('/api/products', {
+            credentials: 'include'
+        });
         
-        // For now, use products from the grid
+        if (!response.ok) {
+            throw new Error('Failed to fetch products');
+        }
+        
+        const responseText = await response.text();
+        allProducts = JSON.parse(responseText);
+        
         renderProducts();
     } catch (error) {
         console.error('Error loading products:', error);
@@ -130,8 +144,72 @@ async function loadProducts() {
 }
 
 function renderProducts() {
-    // Products are already rendered in HTML
-    // This function would be used when loading from API
+    if (!productsGrid) return;
+    
+    // Clear existing products
+    productsGrid.innerHTML = '';
+    
+    // Filter products based on search
+    let filteredProducts = allProducts;
+    const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+    
+    if (searchTerm) {
+        filteredProducts = allProducts.filter(product => 
+            product.productName.toLowerCase().includes(searchTerm) ||
+            product.description.toLowerCase().includes(searchTerm) ||
+            product.category.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    // Render each product
+    filteredProducts.forEach(product => {
+        const productCard = createProductCard(product);
+        productsGrid.appendChild(productCard);
+    });
+    
+    // Show message if no products
+    if (filteredProducts.length === 0) {
+        productsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem;">No products found.</p>';
+    }
+}
+
+function createProductCard(product) {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    
+    // Get first image or use placeholder
+    const imageUrl = product.images && product.images.length > 0 
+        ? product.images[0] 
+        : 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400';
+    
+    // Determine stock status
+    const inStock = product.quantity > 0;
+    const stockBadgeClass = inStock ? 'in-stock' : 'out-of-stock';
+    const stockText = inStock ? 'In Stock' : 'Out of Stock';
+    const buttonText = inStock ? 'Add to Cart' : 'Unavailable';
+    const buttonDisabled = inStock ? '' : 'disabled';
+    
+    card.innerHTML = `
+        <div class="product-image">
+            <img src="${imageUrl}" alt="${product.productName}">
+        </div>
+        <div class="product-info">
+            <h3 class="product-name">${product.productName}</h3>
+            <p class="product-specs">${product.description}</p>
+            <p class="product-price">Ksh. ${parseFloat(product.price).toLocaleString()}</p>
+            <div class="product-rating">
+                <span>★★★★☆</span>
+            </div>
+            <div class="product-footer">
+                <span class="stock-badge ${stockBadgeClass}">${stockText}</span>
+                <button class="add-to-cart-btn" ${buttonDisabled} data-product-id="${product.productId}">
+                    ${buttonText}
+                </button>
+            </div>
+        </div>
+    `;
+    
+    return card;
 }
 
 // ==================== SEARCH FUNCTIONALITY ====================
@@ -142,19 +220,7 @@ function initializeSearch() {
 }
 
 function handleSearch(e) {
-    const searchTerm = e.target.value.toLowerCase();
-    const productCards = document.querySelectorAll('.product-card');
-    
-    productCards.forEach(card => {
-        const productName = card.querySelector('.product-name').textContent.toLowerCase();
-        const productSpecs = card.querySelector('.product-specs').textContent.toLowerCase();
-        
-        if (productName.includes(searchTerm) || productSpecs.includes(searchTerm)) {
-            card.style.display = '';
-        } else {
-            card.style.display = 'none';
-        }
-    });
+    renderProducts(); // Re-render with current search term
 }
 
 // ==================== PAGINATION ====================

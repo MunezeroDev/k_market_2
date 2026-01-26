@@ -46,3 +46,9 @@ Thumbs.db
 
 # Temporary files
 sql_workbench.md
+
+# Images
+*.png
+*.jpg
+*.jpeg
+*.gif

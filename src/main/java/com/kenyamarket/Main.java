@@ -3,6 +3,7 @@ package com.kenyamarket;
 import com.kenyamarket.controllers.RegistrationController;
 import com.kenyamarket.database.DatabaseConnection;
 import com.kenyamarket.controllers.LoginController;
+import com.kenyamarket.controllers.ProductController;
 import com.kenyamarket.filters.SessionFilter;
 import com.kenyamarket.utils.SessionManager;
 import io.javalin.Javalin;
@@ -39,6 +40,32 @@ public class Main {
         app.post("/api/register", RegistrationController::register);
         app.post("/api/login", loginController::handleLogin);
         app.post("/api/logout", loginController::handleLogout);
+
+        // Public product viewing (for buyers)
+        app.get("/api/products", ctx -> {
+            ProductController.getAllProducts(ctx);
+        });
+
+        // Product Management Routes (Seller only)
+        app.get("/api/products/seller", ctx -> {
+            SessionFilter.requireAuth(ctx);
+            ProductController.getSellerProducts(ctx);
+        });
+
+        app.post("/api/products", ctx -> {
+            SessionFilter.requireAuth(ctx);
+            ProductController.addProduct(ctx);
+        });
+
+        app.put("/api/products/{id}", ctx -> {
+            SessionFilter.requireAuth(ctx);
+            ProductController.updateProduct(ctx);
+        });
+
+        app.delete("/api/products/{id}", ctx -> {
+            SessionFilter.requireAuth(ctx);
+            ProductController.deleteProduct(ctx);
+        });
         
         // PROTECTED Routes (authentication required)
         app.get("/api/users", ctx -> {
