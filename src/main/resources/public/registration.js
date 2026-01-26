@@ -78,13 +78,6 @@ class RegistrationManager {
                 this.setFieldsRequired(buyerFields, false);
                 this.setFieldsRequired(sellerFields, true);
                 break;
-                
-            case 'both':
-                this.showFields(buyerFields);
-                this.showFields(sellerFields);
-                this.setFieldsRequired(buyerFields, true);
-                this.setFieldsRequired(sellerFields, true);
-                break;
         }
     }
 
@@ -117,7 +110,6 @@ class RegistrationManager {
         const displayText = {
             'buyer': 'Buyer',
             'seller': 'Seller',
-            'both': 'Buyer & Seller'  // Changed from 'buyerseller'
         };
         
         this.accountTypeDisplay.textContent = displayText[this.currentAccountType] || 'Buyer';

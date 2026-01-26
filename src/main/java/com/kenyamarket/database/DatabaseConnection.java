@@ -15,11 +15,11 @@ public class DatabaseConnection {
         try {
             if (connection == null || connection.isClosed()) {
                 connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-                System.out.println("✅ Database connection established");
+                // System.out.println("✅ Database connection established");
             }
             return connection;
         } catch (SQLException e) {
-            System.err.println("❌ Database connection failed: " + e.getMessage());
+            // System.err.println("❌ Database connection failed: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
@@ -79,10 +79,10 @@ public class DatabaseConnection {
             stmt.execute(createBuyerProfileTable);
             stmt.execute(createSellerProfileTable);
             
-            System.out.println("✅ Database tables initialized: User, UserRole, BuyerProfile, SellerProfile");
+            // System.out.println("✅ Database tables initialized: User, UserRole, BuyerProfile, SellerProfile");
 
         } catch (SQLException e) {
-            System.err.println("❌ Database initialization failed: " + e.getMessage());
+            // System.err.println("❌ Database initialization failed: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -90,12 +90,12 @@ public class DatabaseConnection {
     public static void testConnection() {
         try (Connection conn = getConnection()) {
             if (conn != null && !conn.isClosed()) {
-                System.out.println("🎉 Database connection test: SUCCESS");
+                // System.out.println("🎉 Database connection test: SUCCESS");
             } else {
-                System.out.println("❌ Database connection test: FAILED");
+                // System.out.println("❌ Database connection test: FAILED");
             }
         } catch (SQLException e) {
-            System.out.println("❌ Database connection test: FAILED");
+            // System.out.println("❌ Database connection test: FAILED");
             e.printStackTrace();
         }
     }
@@ -104,7 +104,7 @@ public class DatabaseConnection {
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
-                System.out.println("Database connection closed");
+                // System.out.println("Database connection closed");
             }
         } catch (SQLException e) {
             System.err.println("Error closing database: " + e.getMessage());

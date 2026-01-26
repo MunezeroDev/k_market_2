@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buyer Dashboard - PhoneZShop</title>
+    <!-- Shared CSS -->
+    <link rel="stylesheet" href="buyer_seller_shared.css">
+    <!-- Buyer-specific CSS -->
+    <link rel="stylesheet" href="buyer_dashboard.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="logo-section">
+            <h1>PhoneZShop</h1>
+            <p class="welcome-text">Welcome back, <span id="buyerName">Loading...</span>!</p>
+        </div>
+        <div class="header-actions">
+            <button class="cart-btn" id="cartBtn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <span class="cart-count">0</span>
+            </button>
+            <button class="profile-btn" id="profileBtn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </button>
+            <button class="logout-btn" id="logoutBtn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <!-- Browse Phones Section -->
+        <section class="laptops-section">
+            <div class="section-header">
+                <h2>Browse Phones</h2>
+                <div class="search-filter-bar">
+                    <input type="text" class="search-input" placeholder="Search for phones...">
+                    <button class="filter-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                        </svg>
+                        Filter
+                    </button>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="products-grid" id="productsGrid">
+                <!-- Product Card 1 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400" alt="Samsung Galaxy S25">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Samsung Galaxy S25</h3>
+                        <p class="product-specs">Qualcomm SM8750-AC Snapdragon 8 Elite, 128GB 12GB RAM</p>
+                        <p class="product-price">Ksh. 101,952</p>
+                        <div class="product-rating">
+                            <span>★★★★☆</span>
+                        </div>
+                        <div class="product-footer">
+                            <span class="stock-badge in-stock">In Stock</span>
+                            <button class="add-to-cart-btn">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 2-->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400" alt="Apple iPhone 16">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Apple iPhone 16</h3>
+                        <p class="product-specs">Hexa-core (2x4.04 GHz + 4x2.20 GHz) 128GB 8GB RAM</p>
+                        <p class="product-price">Ksh. 59,589</p>
+                        <div class="product-rating">
+                            <span>★★★★☆</span>
+                        </div>
+                        <div class="product-footer">
+                            <span class="stock-badge out-of-stock">Out of Stock</span>
+                            <button class="add-to-cart-btn" disabled>Unavailable</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="page-btn">‹</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">...</button>
+                <button class="page-btn">9</button>
+                <button class="page-btn">10</button>
+                <button class="page-btn">›</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content profile-modal">
+            <div class="modal-header">
+                <h3>Buyer Profile</h3>
+                <button class="close-modal" id="closeProfile">&times;</button>
+            </div>
+            <div class="profile-details">
+                <div class="profile-item">
+                    <label>Username:</label>
+                    <span id="modalUsername">-</span>
+                </div>
+                <div class="profile-item">
+                    <label>Last Name:</label>
+                    <span id="modalLastName">-</span>
+                </div>
+                <div class="profile-item">
+                    <label>Email:</label>
+                    <span id="modalEmail">-</span>
+                </div>
+                <div class="profile-item">
+                    <label>Phone:</label>
+                    <span id="modalPhone">-</span>
+                </div>
+                <div class="profile-item">
+                    <label>Delivery Location:</label>
+                    <span id="modalDeliveryLocation">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shared Utils -->
+    <script src="buyer_seller_utils.js"></script>
+    <!-- Buyer-specific JS -->
+    <script src="buyer_dashboard.js"></script>
+</body>
+</html>

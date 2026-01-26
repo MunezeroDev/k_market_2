@@ -65,7 +65,7 @@ public class RegistrationController {
         
         // Account type specific validation
         String accountType = user.getAccountType();
-        if (accountType.equals("buyer") || accountType.equals("both")) {
+        if (accountType.equals("buyer")) {
             if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
                 return "Email is required for buyers";
             }
@@ -74,7 +74,7 @@ public class RegistrationController {
             }
         }
         
-        if (accountType.equals("seller") || accountType.equals("both")) {
+        if (accountType.equals("seller")) {
             if (user.getBusinessName() == null || user.getBusinessName().trim().isEmpty()) {
                 return "Business name is required for sellers";
             }

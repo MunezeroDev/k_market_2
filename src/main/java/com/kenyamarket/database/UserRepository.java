@@ -45,13 +45,10 @@ public class UserRepository {
                 insertUserRole(conn, userId, "buyer");
             } else if (accountType.equals("seller")) {
                 insertUserRole(conn, userId, "seller");
-            } else if (accountType.equals("both")) {
-                insertUserRole(conn, userId, "buyer");
-                insertUserRole(conn, userId, "seller");
             }
 
             // 3. Insert into BuyerProfile if buyer or both
-            if (accountType.equals("buyer") || accountType.equals("both")) {
+            if (accountType.equals("buyer")) {
                 String buyerSql = """
                     INSERT INTO BuyerProfile (userId, deliveryLocation)
                     VALUES (?, ?)
@@ -64,7 +61,7 @@ public class UserRepository {
             }
 
             // 4. Insert into SellerProfile if seller or both
-            if (accountType.equals("seller") || accountType.equals("both")) {
+            if (accountType.equals("seller")) {
                 String sellerSql = """
                     INSERT INTO SellerProfile (userId, businessName, businessRegNumber, businessLocation)
                     VALUES (?, ?, ?, ?)
