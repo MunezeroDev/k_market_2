@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     initializeCart();
     initializeSearch();
     initializeProfileButton();
+    initializePagination();
     loadProducts();
 });
 
@@ -56,17 +57,41 @@ function initializeProfileButton() {
 // ==================== CART FUNCTIONALITY ====================
 function initializeCart() {
     // Cart starts empty (in-memory only)
-    // No localStorage usage
     updateCartCount();
+    updateCartDisplay();
     
-    // Cart button click handler
+    // Cart button click handler - Open cart panel
     if (cartBtn) {
         cartBtn.addEventListener('click', () => {
-            showCartModal();
+            openCart();
         });
     }
     
-    // Add to cart button handlers
+    // Close cart button
+    const closeCartBtn = document.getElementById('closeCart');
+    if (closeCartBtn) {
+        closeCartBtn.addEventListener('click', () => {
+            closeCart();
+        });
+    }
+    
+    // Cart overlay click - Close cart
+    const cartOverlay = document.getElementById('cartOverlay');
+    if (cartOverlay) {
+        cartOverlay.addEventListener('click', () => {
+            closeCart();
+        });
+    }
+    
+    // Checkout button
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', () => {
+            handleCheckout();
+        });
+    }
+    
+    // Add to cart button handlers (delegated event)
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('add-to-cart-btn') && !e.target.disabled) {
             const productCard = e.target.closest('.product-card');
@@ -77,11 +102,38 @@ function initializeCart() {
     });
 }
 
+function openCart() {
+    const cartPanel = document.getElementById('cartPanel');
+    const cartOverlay = document.getElementById('cartOverlay');
+    
+    if (cartPanel && cartOverlay) {
+        cartPanel.classList.add('active');
+        cartOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        updateCartDisplay();
+    }
+}
+
+function closeCart() {
+    const cartPanel = document.getElementById('cartPanel');
+    const cartOverlay = document.getElementById('cartOverlay');
+    
+    if (cartPanel && cartOverlay) {
+        cartPanel.classList.remove('active');
+        cartOverlay.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+}
+
 function addToCart(productCard) {
     const productId = productCard.querySelector('.add-to-cart-btn').dataset.productId;
     const productName = productCard.querySelector('.product-name').textContent;
-    const productPrice = productCard.querySelector('.product-price').textContent;
+    const priceText = productCard.querySelector('.product-price').textContent;
     const productImage = productCard.querySelector('.product-image img')?.src;
+    const productDescription = productCard.querySelector('.product-specs').textContent;
+    
+    // Extract numeric price
+    const price = parseFloat(priceText.replace(/[^0-9.-]+/g, ''));
     
     // Check if product already in cart
     const existingProduct = cart.find(item => item.id === productId);
@@ -92,7 +144,8 @@ function addToCart(productCard) {
         const product = {
             id: productId,
             name: productName,
-            price: productPrice,
+            description: productDescription,
+            price: price,
             image: productImage,
             quantity: 1
         };
@@ -101,25 +154,147 @@ function addToCart(productCard) {
     
     saveCart();
     updateCartCount();
+    updateCartDisplay();
     
     DashboardUtils.showNotification('Product added to cart!');
 }
 
 function updateCartCount() {
     if (cartCount) {
-        cartCount.textContent = cart.length;
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCount.textContent = totalItems;
     }
+}
+
+function updateCartDisplay() {
+    const cartItemsContainer = document.getElementById('cartItemsContainer');
+    const totalAmountElement = document.getElementById('totalAmount');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    
+    if (!cartItemsContainer) return;
+    
+    // Clear container
+    cartItemsContainer.innerHTML = '';
+    
+    if (cart.length === 0) {
+        // Show empty cart state
+        cartItemsContainer.innerHTML = `
+            <div class="empty-cart">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <h3>Your cart is empty</h3>
+                <p>Add some products to get started!</p>
+            </div>
+        `;
+        
+        if (totalAmountElement) totalAmountElement.textContent = 'Ksh. 0';
+        if (checkoutBtn) checkoutBtn.disabled = true;
+        return;
+    }
+    
+    // Render cart items
+    cart.forEach(item => {
+        const cartItem = createCartItem(item);
+        cartItemsContainer.appendChild(cartItem);
+    });
+    
+    // Calculate and display total
+    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    if (totalAmountElement) {
+        totalAmountElement.textContent = `Ksh. ${total.toLocaleString()}`;
+    }
+    
+    if (checkoutBtn) checkoutBtn.disabled = false;
+}
+
+function createCartItem(item) {
+    const div = document.createElement('div');
+    div.className = 'cart-item';
+    div.dataset.productId = item.id;
+    
+    div.innerHTML = `
+        <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+        <div class="cart-item-details">
+            <h4 class="cart-item-name">${item.name}</h4>
+            <p class="cart-item-description">${item.description}</p>
+            <p class="cart-item-price">Ksh. ${item.price.toLocaleString()}</p>
+            <div class="cart-item-actions">
+                <span class="quantity-label">Quantity:</span>
+                <div class="quantity-controls">
+                    <button class="quantity-btn decrease-qty" data-product-id="${item.id}">-</button>
+                    <span class="quantity-value">${item.quantity}</span>
+                    <button class="quantity-btn increase-qty" data-product-id="${item.id}">+</button>
+                </div>
+                <button class="remove-item-btn" data-product-id="${item.id}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    // Add event listeners
+    const decreaseBtn = div.querySelector('.decrease-qty');
+    const increaseBtn = div.querySelector('.increase-qty');
+    const removeBtn = div.querySelector('.remove-item-btn');
+    
+    decreaseBtn.addEventListener('click', () => decreaseQuantity(item.id));
+    increaseBtn.addEventListener('click', () => increaseQuantity(item.id));
+    removeBtn.addEventListener('click', () => removeFromCart(item.id));
+    
+    return div;
+}
+
+function increaseQuantity(productId) {
+    const product = cart.find(item => item.id === productId);
+    if (product) {
+        product.quantity += 1;
+        saveCart();
+        updateCartCount();
+        updateCartDisplay();
+    }
+}
+
+function decreaseQuantity(productId) {
+    const product = cart.find(item => item.id === productId);
+    if (product) {
+        if (product.quantity > 1) {
+            product.quantity -= 1;
+            saveCart();
+            updateCartCount();
+            updateCartDisplay();
+        } else {
+            removeFromCart(productId);
+        }
+    }
+}
+
+function removeFromCart(productId) {
+    const index = cart.findIndex(item => item.id === productId);
+    if (index > -1) {
+        cart.splice(index, 1);
+        saveCart();
+        updateCartCount();
+        updateCartDisplay();
+        DashboardUtils.showNotification('Product removed from cart');
+    }
+}
+
+function handleCheckout() {
+    if (cart.length === 0) return;
+    
+    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    alert(`Checkout - Total: Ksh. ${total.toLocaleString()}\n\nCheckout functionality coming soon!`);
 }
 
 function saveCart() {
     // Cart is kept in memory only during session
-    // No localStorage persistence
     console.log('Cart updated:', cart.length, 'items');
-}
-
-function showCartModal() {
-    // Cart modal implementation
-    alert(`You have ${cart.length} items in your cart`);
 }
 
 // ==================== PRODUCTS LOADING ====================
@@ -247,8 +422,3 @@ function updateActivePage() {
         }
     });
 }
-
-// Initialize pagination
-document.addEventListener('DOMContentLoaded', () => {
-    initializePagination();
-});

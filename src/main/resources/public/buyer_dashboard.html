@@ -109,6 +109,36 @@
         </div>
     </div>
 
+    <!-- Cart Side Panel -->
+    <div id="cartPanel" class="cart-panel">
+        <div class="cart-panel-content">
+            <!-- Cart Header -->
+            <div class="cart-header">
+                <h2>My Cart</h2>
+                <button class="close-cart" id="closeCart">&times;</button>
+            </div>
+            
+            <!-- Cart Items Container -->
+            <div class="cart-items-container" id="cartItemsContainer">
+                <!-- Cart items will be dynamically added here -->
+            </div>
+            
+            <!-- Cart Footer with Total and Checkout -->
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Total</span>
+                    <span class="total-amount" id="totalAmount">Ksh. 0</span>
+                </div>
+                <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Cart Overlay -->
+    <div id="cartOverlay" class="cart-overlay"></div>
+
+    <!-- Shared Utils -->
+    <script src="buyer_seller_utils.js"></script>
     <!-- Shared Utils -->
     <script src="buyer_seller_utils.js"></script>
     <!-- Buyer-specific JS -->
