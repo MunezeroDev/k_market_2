@@ -11,9 +11,9 @@ public class UserRepository {
         Connection conn = null;
         try {
             conn = DatabaseConnection.getConnection();
-            conn.setAutoCommit(false); // Start transaction
+            conn.setAutoCommit(false); 
 
-            // 1. Insert into User table
+            
             String userSql = """
                 INSERT INTO User (userName, lastName, email, phoneNo, password, nationalId)
                 VALUES (?, ?, ?, ?, ?, ?)
@@ -30,7 +30,7 @@ public class UserRepository {
                 
                 pstmt.executeUpdate();
                 
-                // Get the generated userId
+                
                 ResultSet rs = pstmt.getGeneratedKeys();
                 if (rs.next()) {
                     userId = rs.getInt(1);
@@ -39,7 +39,7 @@ public class UserRepository {
                 }
             }
 
-            // 2. Insert into UserRole table based on accountType
+            
             String accountType = user.getAccountType().toLowerCase();
             if (accountType.equals("buyer")) {
                 insertUserRole(conn, userId, "buyer");
@@ -47,7 +47,7 @@ public class UserRepository {
                 insertUserRole(conn, userId, "seller");
             }
 
-            // 3. Insert into BuyerProfile if buyer or both
+            
             if (accountType.equals("buyer")) {
                 String buyerSql = """
                     INSERT INTO BuyerProfile (userId, deliveryLocation)
@@ -60,7 +60,7 @@ public class UserRepository {
                 }
             }
 
-            // 4. Insert into SellerProfile if seller or both
+            
             if (accountType.equals("seller")) {
                 String sellerSql = """
                     INSERT INTO SellerProfile (userId, businessName, businessRegNumber, businessLocation)
@@ -75,14 +75,14 @@ public class UserRepository {
                 }
             }
 
-            conn.commit(); // Commit transaction
+            conn.commit(); 
             System.out.println("✅ User saved with ID: " + userId);
             return true;
 
         } catch (SQLException e) {
             if (conn != null) {
                 try {
-                    conn.rollback(); // Rollback on error
+                    conn.rollback(); 
                     System.err.println("Transaction rolled back");
                 } catch (SQLException ex) {
                     ex.printStackTrace();
@@ -160,7 +160,7 @@ public class UserRepository {
                 user.setPassword(rs.getString("password"));
                 user.setNationalId(rs.getString("nationalId"));
                 
-                // Set roles
+                
                 String roles = rs.getString("roles");
                 user.setAccountType(roles);
                 

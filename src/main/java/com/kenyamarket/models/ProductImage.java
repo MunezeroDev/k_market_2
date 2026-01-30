@@ -5,11 +5,11 @@ import java.sql.Timestamp;
 public class ProductImage {
     private int imageId;
     private int productId;
-    private String imageData;  // Base64 encoded image
+    private String imageData;  
     private boolean isPrimary;
     private Timestamp createdAt;
 
-    // Constructors
+    
     public ProductImage() {}
 
     public ProductImage(int productId, String imageData, boolean isPrimary) {
@@ -18,7 +18,7 @@ public class ProductImage {
         this.isPrimary = isPrimary;
     }
 
-    // Getters and Setters
+    
     public int getImageId() {
         return imageId;
     }

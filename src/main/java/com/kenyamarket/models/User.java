@@ -2,7 +2,7 @@ package com.kenyamarket.models;
 
 public class User {
     private int userId;
-    private String accountType;  // This will be parsed to determine roles
+    private String accountType;  
     private String userName;
     private String lastName;
     private String email;
@@ -10,18 +10,18 @@ public class User {
     private String password;
     private String nationalId;
     
-    // Buyer-specific
+    
     private String deliveryLocation;
     
-    // Seller-specific
+    
     private String businessName;
     private String businessRegNumber;
     private String businessLocation;
 
-    // Constructors
+    
     public User() {}
 
-    // Getters and Setters
+    
     public int getUserId() { return userId; }
     public void setUserId(int userId) { this.userId = userId; }
 
@@ -31,7 +31,7 @@ public class User {
     public String getUserName() { return userName; }
     public void setUserName(String userName) { this.userName = userName; }
     
-    // Keep this for JSON compatibility with frontend
+    
     public String getUsername() { return userName; }
     public void setUsername(String username) { this.userName = username; }
 
@@ -44,7 +44,7 @@ public class User {
     public String getPhoneNo() { return phoneNo; }
     public void setPhoneNo(String phoneNo) { this.phoneNo = phoneNo; }
     
-    // Keep this for JSON compatibility with frontend
+    
     public String getPhoneNumber() { return phoneNo; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNo = phoneNumber; }
 

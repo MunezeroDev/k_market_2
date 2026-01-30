@@ -1,6 +1,6 @@
-/* buyer_seller_shared.css */
-/* ==================== SHARED STYLES ==================== */
-/* This file contains common styles used across buyer and seller dashboards */
+
+
+
 
 * {
     margin: 0;
@@ -14,7 +14,7 @@ body {
     color: #333;
 }
 
-/* ==================== HEADER STYLES ==================== */
+
 .dashboard-header {
     background-color: #0f878F;
     color: #ffffff;
@@ -80,14 +80,14 @@ body {
     text-align: center;
 }
 
-/* ==================== MAIN CONTENT ==================== */
+
 .dashboard-main {
     padding: 2rem 3rem;
     max-width: 1400px;
     margin: 0 auto;
 }
 
-/* ==================== SECTION STYLES ==================== */
+
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -100,7 +100,7 @@ body {
     color: #0f878F;
 }
 
-/* ==================== BUTTON STYLES ==================== */
+
 .btn-primary {
     background-color: #0f878F;
     color: #ffffff;
@@ -128,7 +128,7 @@ body {
     transform: none;
 }
 
-/* ==================== SEARCH & FILTER ==================== */
+
 .search-filter-bar {
     display: flex;
     gap: 1rem;
@@ -165,7 +165,7 @@ body {
     color: #0f878F;
 }
 
-/* ==================== PAGINATION ==================== */
+
 .pagination {
     display: flex;
     justify-content: center;
@@ -193,7 +193,7 @@ body {
     border-color: #0f878F;
 }
 
-/* ==================== MODAL STYLES ==================== */
+
 .modal {
     display: none;
     position: fixed;
@@ -269,7 +269,7 @@ body {
     color: #333;
 }
 
-/* ==================== RESPONSIVE ==================== */
+
 @media (max-width: 768px) {
     .dashboard-header {
         padding: 1rem 1.5rem;

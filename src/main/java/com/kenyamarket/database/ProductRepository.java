@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ProductRepository {
     
-    // Save a new product with images
+    
     public static int saveProduct(Product product, List<String> imageDataList) {
         Connection conn = null;
         PreparedStatement productStmt = null;
@@ -17,9 +17,9 @@ public class ProductRepository {
         
         try {
             conn = DatabaseConnection.getConnection();
-            conn.setAutoCommit(false); // Start transaction
+            conn.setAutoCommit(false); 
             
-            // 1. Insert product
+            
             String productSql = """
                 INSERT INTO Product (sellerId, productName, description, price, quantity, category, status)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -36,7 +36,7 @@ public class ProductRepository {
             
             productStmt.executeUpdate();
             
-            // Get generated productId
+            
             generatedKeys = productStmt.getGeneratedKeys();
             int productId = -1;
             if (generatedKeys.next()) {
@@ -45,7 +45,7 @@ public class ProductRepository {
                 throw new SQLException("Failed to get productId");
             }
             
-            // 2. Insert images if any
+            
             if (imageDataList != null && !imageDataList.isEmpty()) {
                 String imageSql = """
                     INSERT INTO ProductImage (productId, imageData, isPrimary)
@@ -57,7 +57,7 @@ public class ProductRepository {
                 for (int i = 0; i < imageDataList.size(); i++) {
                     imageStmt.setInt(1, productId);
                     imageStmt.setString(2, imageDataList.get(i));
-                    imageStmt.setBoolean(3, i == 0); // First image is primary
+                    imageStmt.setBoolean(3, i == 0); 
                     imageStmt.addBatch();
                 }
                 
@@ -92,7 +92,7 @@ public class ProductRepository {
         }
     }
 
-    // Get images for a specific product
+    
     public static List<String> getProductImages(int productId) {
         List<String> images = new ArrayList<>();
         String sql = "SELECT imageData FROM ProductImage WHERE productId = ? ORDER BY isPrimary DESC";
@@ -115,7 +115,7 @@ public class ProductRepository {
         return images;
     }
         
-    // Get all products for a specific seller
+    
     public static List<Product> getProductsBySeller(int sellerId) {
         List<Product> products = new ArrayList<>();
         String sql = "SELECT * FROM Product WHERE sellerId = ? ORDER BY createdAt DESC";
@@ -150,7 +150,7 @@ public class ProductRepository {
         return products;
     }
 
-    // Get all active products (for buyers)
+    
     public static List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
         String sql = "SELECT * FROM Product WHERE status = 'active' ORDER BY createdAt DESC";
@@ -184,7 +184,7 @@ public class ProductRepository {
         return products;
     }
     
-    // Delete product (and its images via CASCADE)
+    
     public static boolean deleteProduct(int productId, int sellerId) {
         String sql = "DELETE FROM Product WHERE productId = ? AND sellerId = ?";
         
@@ -192,7 +192,7 @@ public class ProductRepository {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setInt(1, productId);
-            pstmt.setInt(2, sellerId); // Ensure seller owns this product
+            pstmt.setInt(2, sellerId); 
             
             int rowsAffected = pstmt.executeUpdate();
             
@@ -213,7 +213,7 @@ public class ProductRepository {
 
     
     
-    // Update product
+    
     public static boolean updateProduct(Product product) {
         String sql = """
             UPDATE Product 
@@ -231,7 +231,7 @@ public class ProductRepository {
             pstmt.setString(5, product.getCategory());
             pstmt.setString(6, product.getStatus());
             pstmt.setInt(7, product.getProductId());
-            pstmt.setInt(8, product.getSellerId()); // Ensure seller owns this product
+            pstmt.setInt(8, product.getSellerId()); 
             
             int rowsAffected = pstmt.executeUpdate();
             

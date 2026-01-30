@@ -21,7 +21,7 @@ public class LoginService {
         try {
             conn = DatabaseConnection.getConnection();
             
-            // Step 1: Check if username and password match
+            
             String userQuery = "SELECT * FROM User WHERE userName = ? AND password = ?";
             userStmt = conn.prepareStatement(userQuery);
             userStmt.setString(1, userName);
@@ -29,11 +29,11 @@ public class LoginService {
             userRs = userStmt.executeQuery();
             
             if (!userRs.next()) {
-                // Login failed - no matching user
+                
                 return new LoginResult(false, null, null, "Invalid username or password");
             }
             
-            // Step 2: Create User object from result
+            
             User user = new User();
             user.setUserId(userRs.getInt("userId"));
             user.setUserName(userRs.getString("userName"));
@@ -42,7 +42,7 @@ public class LoginService {
             user.setPhoneNo(userRs.getString("phoneNo"));
             user.setNationalId(userRs.getString("nationalId"));
             
-            // Step 3: Fetch roles for this user
+            
             String roleQuery = "SELECT role FROM UserRole WHERE userId = ?";
             roleStmt = conn.prepareStatement(roleQuery);
             roleStmt.setInt(1, user.getUserId());
@@ -53,7 +53,7 @@ public class LoginService {
                 roles.add(roleRs.getString("role"));
             }
             
-            // Step 4: Return success result with user and roles
+            
             return new LoginResult(true, user, roles, "Login successful");
             
         } catch (SQLException e) {
@@ -61,7 +61,7 @@ public class LoginService {
             e.printStackTrace();
             return new LoginResult(false, null, null, "Database error occurred");
         } finally {
-            // Clean up resources
+            
             try {
                 if (roleRs != null) roleRs.close();
                 if (userRs != null) userRs.close();

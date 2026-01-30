@@ -5,7 +5,6 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     const password = document.getElementById('password').value;
     
     try {
-        // Send login request with form data
         const formData = new URLSearchParams();
         formData.append('userName', username);
         formData.append('password', password);
@@ -16,7 +15,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
             body: formData,
-            credentials: 'include' // Important: include cookies in request
+            credentials: 'include'
         });
         
         const resultString = await response.text();
@@ -26,33 +25,26 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 
             console.log('Login Sucessful:');
 
-            // Show success modal
             document.getElementById('successMessage').textContent = 
                 `Welcome back, ${loginResult.user.userName}!`;
-            document.getElementById('successModal').style.display = 'flex';
+            document.getElementById('successModal').classList.add('active');
             
-            // Determine which dashboard to redirect to based on roles
             const roles = loginResult.roles;
             let redirectUrl = null;
             
             if (roles.includes('buyer') && !roles.includes('seller')) {
-                // Pure buyer - go to buyer dashboard
                 redirectUrl = 'buyer_dashboard.html';
             } else if (roles.includes('seller') && !roles.includes('buyer')) {
-                // Pure seller - go to seller dashboard
                 redirectUrl = 'seller_dashboard.html';
             } else if (roles.includes('buyer') && roles.includes('seller')) {
-                // Has both roles - prioritize seller dashboard
                 redirectUrl = 'seller_dashboard.html';
             }
             
-            // Redirect if we have a valid URL
             if (redirectUrl) {
                 setTimeout(() => {
                     window.location.href = redirectUrl;
                 }, 2000);
             } else {
-                // No buyer or seller role - show error
                 document.getElementById('successModal').style.display = 'none';
                 document.getElementById('errorMessage').textContent = 
                     'No buyer or seller role assigned. Please contact administrator.';
@@ -60,9 +52,8 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             }
             
         } else {
-            // Show error modal
             document.getElementById('errorMessage').textContent = loginResult.message;
-            document.getElementById('errorModal').style.display = 'flex';
+            document.getElementById('errorModal').classList.add('active');
         }
         
     } catch (error) {
@@ -73,7 +64,6 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     }
 });
 
-// Close error modal
 document.getElementById('closeError').addEventListener('click', () => {
     document.getElementById('errorModal').style.display = 'none';
 });

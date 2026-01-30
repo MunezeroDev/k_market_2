@@ -1,4 +1,4 @@
-/* Authentication styles for KenyaMarket (Login & Registration) */
+
 
 * {
     margin: 0;
@@ -16,7 +16,7 @@ body {
     padding: 20px;
 }
 
-/* Shared Container Styles */
+
 .login-container,
 .registration-container {
     background: white;
@@ -34,7 +34,7 @@ body {
     max-width: 900px;
 }
 
-/* Header Section */
+
 h1 {
     color: #1a1a1a;
     font-size: 28px;
@@ -77,7 +77,7 @@ h1 {
     font-size: 17px;
 }
 
-/* Update Account Type Button */
+
 .update-account-btn {
     display: block;
     width: 100%;
@@ -100,7 +100,7 @@ h1 {
     box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
 }
 
-/* Form Row Layout */
+
 .form-row {
     display: flex;
     gap: 15px;
@@ -112,13 +112,13 @@ h1 {
     margin-bottom: 0;
 }
 
-/* Form Groups */
+
 .form-group {
     margin-bottom: 20px;
     transition: opacity 0.3s ease, max-height 0.3s ease;
 }
 
-/* Labels */
+
 label {
     display: block;
     margin-bottom: 8px;
@@ -127,7 +127,7 @@ label {
     font-weight: 500;
 }
 
-/* Inputs */
+
 input {
     width: 100%;
     padding: 12px 16px;
@@ -149,7 +149,7 @@ input::placeholder {
     color: #999;
 }
 
-/* Buttons */
+
 .login-btn,
 .register-btn {
     width: 100%;
@@ -177,7 +177,7 @@ input::placeholder {
     transform: translateY(0);
 }
 
-/* Footer Links */
+
 .footer-links {
     margin-top: 25px;
     text-align: center;
@@ -200,7 +200,7 @@ input::placeholder {
     text-decoration: underline;
 }
 
-/* Modal Styles */
+
 .modal {
     display: none;
     position: fixed;
@@ -236,7 +236,7 @@ input::placeholder {
     text-align: center;
 }
 
-/* Account Type Selection Modal */
+
 .account-type-options {
     display: flex;
     flex-direction: column;
@@ -276,7 +276,7 @@ input::placeholder {
     font-weight: 600;
 }
 
-/* Success and Error Modals */
+
 #successModal h2 {
     color: #059669;
     font-size: 24px;
@@ -330,7 +330,7 @@ input::placeholder {
     box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
 }
 
-/* Form Messages */
+
 .form-message {
     margin-top: 15px;
     padding: 12px;
@@ -353,7 +353,7 @@ input::placeholder {
     color: #0369a1;
 }
 
-/* Animations */
+
 @keyframes fadeIn {
     from {
         opacity: 0;

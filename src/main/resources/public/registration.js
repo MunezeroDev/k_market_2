@@ -1,4 +1,4 @@
-// Registration form handler for KenyaMarket
+
 
 class RegistrationManager {
     constructor() {
@@ -11,12 +11,12 @@ class RegistrationManager {
     }
 
     init() {
-        // Set initial account type from URL or default to buyer
+        
         const urlParams = new URLSearchParams(window.location.search);
         const accountType = urlParams.get('type') || 'buyer';
         this.setAccountType(accountType);
 
-        // Event listeners
+        
         document.getElementById('updateAccountType').addEventListener('click', (e) => {
             e.preventDefault();
             this.showModal();
@@ -31,14 +31,14 @@ class RegistrationManager {
             this.handleSubmit();
         });
 
-        // Close modal when clicking outside
+        
         this.modal.addEventListener('click', (e) => {
             if (e.target === this.modal) {
                 this.hideModal();
             }
         });
 
-        // Success modal buttons
+        
         document.getElementById('goToLogin').addEventListener('click', () => {
             window.location.href = 'login.html';
         });
@@ -48,7 +48,7 @@ class RegistrationManager {
             this.form.reset();
         });
 
-        // Error modal button
+        
         document.getElementById('closeError').addEventListener('click', () => {
             this.hideErrorModal();
         });
@@ -116,7 +116,7 @@ class RegistrationManager {
     }
     
     showModal() {
-        // Set current selection in modal
+        
         const radio = document.querySelector(`input[name="accountType"][value="${this.currentAccountType}"]`);
         if (radio) {
             radio.checked = true;
@@ -158,15 +158,15 @@ class RegistrationManager {
     }
 
     handleSubmit() {
-        // Collect form data
+        
         const formData = new FormData(this.form);
         const data = {
             accountType: this.currentAccountType
         };
 
-        // Add all form fields to data object
+        
         for (let [key, value] of formData.entries()) {
-            // Only include visible/required fields
+            
             const field = this.form.querySelector(`[name="${key}"]`);
             const fieldGroup = field?.closest('.form-group');
             
@@ -178,7 +178,7 @@ class RegistrationManager {
         console.log('Registration data:', data);
 
         
-        // Send to backend
+        
         fetch('/api/register', {
             method: 'POST',
             headers: {
@@ -202,7 +202,7 @@ class RegistrationManager {
     }
 }
 
-// Initialize the registration manager when DOM is loaded
+
 document.addEventListener('DOMContentLoaded', () => {
     new RegistrationManager();
 });

@@ -17,7 +17,7 @@ public class Product {
     private Timestamp updatedAt;
     private List<String> images;
 
-    // Constructors
+    
     public Product() {}
 
     public Product(int sellerId, String productName, String description, 
@@ -31,7 +31,7 @@ public class Product {
         this.status = "active";
     }
 
-    // Getters and Setters
+    
     public int getProductId() {
         return productId;
     }

@@ -8,15 +8,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SessionManager {
     
-    // Store sessions: sessionId -> SessionData
+    
     private static final Map<String, SessionData> sessions = new ConcurrentHashMap<>();
     
-    // Session timeout in milliseconds (30 minutes)
+    
     private static final long SESSION_TIMEOUT = 30 * 60 * 1000;
     
-    /**
-     * Create a new session for a user
-     */
+    
     public static String createSession(User user, List<String> roles) {
         String sessionId = UUID.randomUUID().toString();
         SessionData sessionData = new SessionData(user, roles, System.currentTimeMillis());
@@ -26,9 +24,7 @@ public class SessionManager {
         return sessionId;
     }
     
-    /**
-     * Validate a session and return the session data if valid
-     */
+    
     public static SessionData getSession(String sessionId) {
         if (sessionId == null || sessionId.isEmpty()) {
             return null;
@@ -40,7 +36,7 @@ public class SessionManager {
             return null;
         }
         
-        // Check if session has expired
+        
         long currentTime = System.currentTimeMillis();
         if (currentTime - sessionData.getCreatedAt() > SESSION_TIMEOUT) {
             sessions.remove(sessionId);
@@ -48,22 +44,18 @@ public class SessionManager {
             return null;
         }
         
-        // Update last access time
+        
         sessionData.setCreatedAt(currentTime);
         
         return sessionData;
     }
     
-    /**
-     * Check if a session is valid
-     */
+    
     public static boolean isValidSession(String sessionId) {
         return getSession(sessionId) != null;
     }
     
-    /**
-     * Destroy a session (logout)
-     */
+    
     public static void destroySession(String sessionId) {
         SessionData removed = sessions.remove(sessionId);
         if (removed != null) {
@@ -71,9 +63,7 @@ public class SessionManager {
         }
     }
     
-    /**
-     * Inner class to hold session data
-     */
+    
     public static class SessionData {
         private User user;
         private List<String> roles;

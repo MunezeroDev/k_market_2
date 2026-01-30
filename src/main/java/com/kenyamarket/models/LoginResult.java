@@ -14,7 +14,7 @@ public class LoginResult {
         this.message = message;
     }
 
-    // Getters
+    
     public boolean isSuccess() {
         return success;
     }
@@ -31,7 +31,7 @@ public class LoginResult {
         return message;
     }
 
-    // Setters
+    
     public void setSuccess(boolean success) {
         this.success = success;
     }

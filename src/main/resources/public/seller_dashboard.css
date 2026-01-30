@@ -1,8 +1,8 @@
-/* seller-dashboard.css */
-/* ==================== SELLER-SPECIFIC STYLES ==================== */
-/* This file contains styles unique to the seller dashboard */
 
-/* ==================== INVENTORY SECTION ==================== */
+
+
+
+
 .inventory-section {
     background: #ffffff;
     border-radius: 8px;
@@ -16,7 +16,7 @@
     align-items: center;
 }
 
-/* ==================== TABLE STYLES ==================== */
+
 .table-container {
     overflow-x: auto;
     margin-bottom: 1.5rem;
@@ -74,7 +74,7 @@
     object-fit: cover;
 }
 
-/* ==================== ACTION BUTTONS ==================== */
+
 .action-btn {
     background: none;
     border: 1px solid #ddd;
@@ -97,7 +97,7 @@
     color: #f44336;
 }
 
-/* ==================== STATUS BADGES ==================== */
+
 .status-badge {
     padding: 0.4rem 0.8rem;
     border-radius: 12px;
@@ -120,7 +120,7 @@
     color: #721c24;
 }
 
-/* ==================== PRODUCTS LIST SECTION ==================== */
+
 .products-list-section {
     background: #ffffff;
     border-radius: 8px;
@@ -216,7 +216,7 @@
     font-size: 0.95rem;
 }
 
-/* ==================== MODAL SPECIFIC EXTENSIONS ==================== */
+
 .list-item-modal {
     max-width: 600px;
     max-height: 100vh;
@@ -227,7 +227,7 @@
     padding: 1.5rem;
 }
 
-/* ==================== FORM STYLES ==================== */
+
 .form-group {
     margin-bottom: 1.2rem;
 }
@@ -265,7 +265,7 @@
     min-height: 80px;
 }
 
-/* ==================== IMAGE UPLOAD ==================== */
+
 .image-upload {
     border: 2px dashed #ddd;
     border-radius: 6px;
@@ -330,7 +330,7 @@
     background: rgba(0,0,0,0.8);
 }
 
-/* ==================== DROPDOWN STYLES ==================== */
+
 .profile-dropdown,
 .logout-dropdown {
     position: absolute;
@@ -372,7 +372,7 @@
     background: #ffe5e5;
 }
 
-/* ==================== RESPONSIVE ==================== */
+
 @media (max-width: 768px) {
     .inventory-section {
         padding: 1.5rem;

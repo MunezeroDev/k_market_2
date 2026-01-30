@@ -15,7 +15,7 @@ import java.util.Map;
 public class ProductController {
     private static final Gson gson = new Gson();
     
-    // Get all products for the logged-in seller
+    
     public static void getSellerProducts(Context ctx) {
         String sessionId = ctx.cookie("sessionId");
         SessionManager.SessionData sessionData = SessionManager.getSession(sessionId);
@@ -28,7 +28,7 @@ public class ProductController {
         int sellerId = sessionData.getUser().getUserId();
         List<Product> products = ProductRepository.getProductsBySeller(sellerId);
         
-        // Add images to each product
+        
         for (Product product : products) {
             List<String> images = ProductRepository.getProductImages(product.getProductId());
             product.setImages(images);
@@ -37,11 +37,11 @@ public class ProductController {
         ctx.json(gson.toJson(products));
     }
 
-    // Get all active products (for buyers)
+    
     public static void getAllProducts(Context ctx) {
         List<Product> products = ProductRepository.getAllProducts();
         
-        // Add images to each product
+        
         for (Product product : products) {
             List<String> images = ProductRepository.getProductImages(product.getProductId());
             product.setImages(images);
@@ -51,7 +51,7 @@ public class ProductController {
     }
   
     
-    // Add a new product
+    
     public static void addProduct(Context ctx) {
         String sessionId = ctx.cookie("sessionId");
         SessionManager.SessionData sessionData = SessionManager.getSession(sessionId);
@@ -67,10 +67,10 @@ public class ProductController {
         }
         
         try {
-            // Parse request body
+            
             Map<String, Object> requestData = gson.fromJson(ctx.body(), Map.class);
             
-            // Create product object
+            
             Product product = new Product();
             product.setSellerId(sessionData.getUser().getUserId());
             product.setProductName((String) requestData.get("productName"));
@@ -80,10 +80,10 @@ public class ProductController {
             product.setCategory((String) requestData.get("category"));
             product.setStatus("active");
             
-            // Get images if any
+            
             List<String> images = (List<String>) requestData.get("images");
             
-            // Save product
+            
             int productId = ProductRepository.saveProduct(product, images);
             
             if (productId > 0) {
@@ -102,7 +102,7 @@ public class ProductController {
         }
     }
     
-    // Delete a product
+    
     public static void deleteProduct(Context ctx) {
         String sessionId = ctx.cookie("sessionId");
         SessionManager.SessionData sessionData = SessionManager.getSession(sessionId);
@@ -129,7 +129,7 @@ public class ProductController {
         }
     }
     
-    // Update a product
+    
     public static void updateProduct(Context ctx) {
         String sessionId = ctx.cookie("sessionId");
         SessionManager.SessionData sessionData = SessionManager.getSession(sessionId);

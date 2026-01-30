@@ -10,23 +10,23 @@ public class RegistrationController {
 
     public static void register(Context ctx) {
         try {
-            // Parse the JSON body into a User object
+            
             User user = ctx.bodyAsClass(User.class);
             
-            // Validate the user data
+            
             String validationError = validateUser(user);
             if (validationError != null) {
                 ctx.status(400).json(createResponse(false, validationError));
                 return;
             }
             
-            // Check if username already exists
+            
             if (UserRepository.userExists(user.getUsername())) {
                 ctx.status(409).json(createResponse(false, "Username already exists"));
                 return;
             }
             
-            // Save the user to database
+            
             boolean saved = UserRepository.saveUser(user);
             
             if (saved) {
@@ -63,7 +63,7 @@ public class RegistrationController {
             return "National ID is required";
         }
         
-        // Account type specific validation
+        
         String accountType = user.getAccountType();
         if (accountType.equals("buyer")) {
             if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
@@ -86,7 +86,7 @@ public class RegistrationController {
             }
         }
         
-        return null; // No errors
+        return null; 
     }
     
     private static Map<String, Object> createResponse(boolean success, String message) {
@@ -96,7 +96,7 @@ public class RegistrationController {
         return response;
     }
     
-    // Method to get all users (for testing)
+    
     public static void getAllUsers(Context ctx) {
         ctx.json(UserRepository.getAllUsers());
     }
