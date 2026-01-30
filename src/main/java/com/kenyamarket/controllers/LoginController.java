@@ -7,56 +7,51 @@ import io.javalin.http.Context;
 import com.google.gson.Gson;
 
 public class LoginController {
-    
-    private LoginService loginService;
-    private Gson gson;
-    
-    public LoginController() {
-        this.loginService = new LoginService();
-        this.gson = new Gson();
-    }
-    
-    public void handleLogin(Context ctx) {
-        
-        String userName = ctx.formParam("userName");
-        String password = ctx.formParam("password");
-        
-        
-        if (userName == null || userName.isEmpty() || password == null || password.isEmpty()) {
-            ctx.status(400).json(gson.toJson(new LoginResult(false, null, null, "Username and password are required")));
-            return;
-        }
-        
-        
-        LoginResult result = loginService.login(userName, password);
-        
-        
-        if (result.isSuccess()) {
-            
-            String sessionId = SessionManager.createSession(result.getUser(), result.getRoles());
-            
-            
-            ctx.cookie("sessionId", sessionId, 30 * 60); 
-            
-            ctx.status(200).json(gson.toJson(result));
-            System.out.println("✅ User logged in: " + userName + " with roles: " + result.getRoles());
-        } else {
-            ctx.status(401).json(gson.toJson(result));
-            System.out.println("❌ Login failed for: " + userName);
-        }
-    }
-    
-    public void handleLogout(Context ctx) {
-        String sessionId = ctx.cookie("sessionId");
-        
-        if (sessionId != null) {
-            SessionManager.destroySession(sessionId);
-        }
-        
-        
-        ctx.removeCookie("sessionId");
-        
-        ctx.status(200).json("{\"success\": true, \"message\": \"Logged out successfully\"}");
-        System.out.println("👋 User logged out");
-    }
+
+	private LoginService loginService;
+	private Gson gson;
+
+	public LoginController() {
+		this.loginService = new LoginService();
+		this.gson = new Gson();
+	}
+
+	public void handleLogin(Context ctx) {
+
+		String userName = ctx.formParam("userName");
+		String password = ctx.formParam("password");
+
+		if (userName == null || userName.isEmpty() || password == null || password.isEmpty()) {
+			ctx.status(400).json(gson.toJson(new LoginResult(false, null, null, "Username and password are required")));
+			return;
+		}
+
+		LoginResult result = loginService.login(userName, password);
+
+		if (result.isSuccess()) {
+
+			String sessionId = SessionManager.createSession(result.getUser(), result.getRoles());
+
+			ctx.cookie("sessionId", sessionId, 30 * 60);
+
+			ctx.status(200).json(gson.toJson(result));
+			System.out.println("✅ User logged in: " + userName + " with roles: " + result.getRoles());
+		} else {
+			ctx.status(401).json(gson.toJson(result));
+			System.out.println("❌ Login failed for: " + userName);
+		}
+	}
+
+	public void handleLogout(Context ctx) {
+		String sessionId = ctx.cookie("sessionId");
+
+		if (sessionId != null) {
+			SessionManager.destroySession(sessionId);
+		}
+
+		ctx.removeCookie("sessionId");
+
+		ctx.status(200).json("{\"success\": true, \"message\": \"Logged out successfully\"}");
+		System.out.println("👋 User logged out");
+	}
 }

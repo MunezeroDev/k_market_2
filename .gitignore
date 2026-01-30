@@ -8,6 +8,7 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
+node_modules/
 
 # IDE - VS Code
 .vscode/
@@ -46,6 +47,7 @@ Thumbs.db
 
 # Temporary files
 sql_workbench.md
+remove_comments.py
 
 # Images
 *.png
