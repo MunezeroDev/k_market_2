@@ -16,6 +16,7 @@ public class Main {
 
 		DatabaseConnection.initializeDatabase();
 		DatabaseConnection.testConnection();
+		
 		LoginController loginController = new LoginController();
 		Gson gson = new Gson();
 
@@ -30,8 +31,6 @@ public class Main {
 		}).start(7070);
 
 		System.out.println("🚀 KenyaMarket server started on http://localhost:7070");
-		// System.out.println("📝 Registration page:
-		// http://localhost:7070/registration.html");
 		System.out.println("🔐 Login page: http://localhost:7070/login.html");
 
 		// PUBLIC Routes (no authentication required)

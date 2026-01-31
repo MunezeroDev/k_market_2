@@ -1,6 +1,9 @@
 package com.kenyamarket.database;
 
 import com.kenyamarket.models.User;
+import com.kenyamarket.models.Buyer;
+import com.kenyamarket.models.Seller;
+import com.kenyamarket.models.Admin;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,37 +40,38 @@ public class UserRepository {
 				}
 			}
 
-			String accountType = user.getAccountType().toLowerCase();
-			if (accountType.equals("buyer")) {
+			if (user instanceof Buyer) {
 				insertUserRole(conn, userId, "buyer");
-			} else if (accountType.equals("seller")) {
-				insertUserRole(conn, userId, "seller");
-			}
-
-			if (accountType.equals("buyer")) {
+				Buyer buyer = (Buyer) user;
+				
 				String buyerSql = """
 						    INSERT INTO BuyerProfile (userId, deliveryLocation)
 						    VALUES (?, ?)
 						""";
 				try (PreparedStatement pstmt = conn.prepareStatement(buyerSql)) {
 					pstmt.setInt(1, userId);
-					pstmt.setString(2, user.getDeliveryLocation());
+					pstmt.setString(2, buyer.getDeliveryLocation());
 					pstmt.executeUpdate();
 				}
-			}
-
-			if (accountType.equals("seller")) {
+			} 
+			else if (user instanceof Seller) {
+				insertUserRole(conn, userId, "seller");
+				Seller seller = (Seller) user;
+				
 				String sellerSql = """
 						    INSERT INTO SellerProfile (userId, businessName, businessRegNumber, businessLocation)
 						    VALUES (?, ?, ?, ?)
 						""";
 				try (PreparedStatement pstmt = conn.prepareStatement(sellerSql)) {
 					pstmt.setInt(1, userId);
-					pstmt.setString(2, user.getBusinessName());
-					pstmt.setString(3, user.getBusinessRegNumber());
-					pstmt.setString(4, user.getBusinessLocation());
+					pstmt.setString(2, seller.getBusinessName());
+					pstmt.setString(3, seller.getBusinessRegNumber());
+					pstmt.setString(4, seller.getBusinessLocation());
 					pstmt.executeUpdate();
 				}
+			} 
+			else if (user instanceof Admin) {
+				insertUserRole(conn, userId, "admin");
 			}
 
 			conn.commit();
@@ -146,7 +150,23 @@ public class UserRepository {
 				ResultSet rs = stmt.executeQuery(sql)) {
 
 			while (rs.next()) {
-				User user = new User();
+				String roles = rs.getString("roles");
+				User user;
+
+				if (roles != null && roles.contains("buyer")) {
+					Buyer buyer = new Buyer();
+					buyer.setDeliveryLocation(rs.getString("deliveryLocation"));
+					user = buyer;
+				} else if (roles != null && roles.contains("seller")) {
+					Seller seller = new Seller();
+					seller.setBusinessName(rs.getString("businessName"));
+					seller.setBusinessRegNumber(rs.getString("businessRegNumber"));
+					seller.setBusinessLocation(rs.getString("businessLocation"));
+					user = seller;
+				} else {
+					user = new Admin();
+				}
+
 				user.setUserId(rs.getInt("userId"));
 				user.setUserName(rs.getString("userName"));
 				user.setLastName(rs.getString("lastName"));
@@ -154,14 +174,6 @@ public class UserRepository {
 				user.setPhoneNo(rs.getString("phoneNo"));
 				user.setPassword(rs.getString("password"));
 				user.setNationalId(rs.getString("nationalId"));
-
-				String roles = rs.getString("roles");
-				user.setAccountType(roles);
-
-				user.setDeliveryLocation(rs.getString("deliveryLocation"));
-				user.setBusinessName(rs.getString("businessName"));
-				user.setBusinessRegNumber(rs.getString("businessRegNumber"));
-				user.setBusinessLocation(rs.getString("businessLocation"));
 
 				users.add(user);
 			}

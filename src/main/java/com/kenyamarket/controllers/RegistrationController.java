@@ -1,17 +1,54 @@
 package com.kenyamarket.controllers;
 
 import com.kenyamarket.models.User;
+import com.kenyamarket.models.Buyer;
+import com.kenyamarket.models.Seller;
+import com.kenyamarket.models.Admin;
 import com.kenyamarket.database.UserRepository;
 import io.javalin.http.Context;
+import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RegistrationController {
 
+	private static final Gson gson = new Gson();
+
 	public static void register(Context ctx) {
 		try {
+			Map<String, Object> body = gson.fromJson(ctx.body(), Map.class);
+			String accountType = (String) body.get("accountType");
 
-			User user = ctx.bodyAsClass(User.class);
+			if (accountType == null || accountType.trim().isEmpty()) {
+				ctx.status(400).json(createResponse(false, "Account type is required"));
+				return;
+			}
+
+			User user;
+
+			if (accountType.equalsIgnoreCase("buyer")) {
+				Buyer buyer = new Buyer();
+				buyer.setDeliveryLocation((String) body.get("deliveryLocation"));
+				user = buyer;
+			} else if (accountType.equalsIgnoreCase("seller")) {
+				Seller seller = new Seller();
+				seller.setBusinessName((String) body.get("businessName"));
+				seller.setBusinessRegNumber((String) body.get("businessRegNumber"));
+				seller.setBusinessLocation((String) body.get("businessLocation"));
+				user = seller;
+			} else if (accountType.equalsIgnoreCase("admin")) {
+				user = new Admin();
+			} else {
+				ctx.status(400).json(createResponse(false, "Invalid account type"));
+				return;
+			}
+			
+			user.setUserName((String) body.get("username"));      
+			user.setLastName((String) body.get("lastName"));      
+			user.setEmail((String) body.get("email"));           
+			user.setPhoneNo((String) body.get("phoneNumber"));    
+			user.setPassword((String) body.get("password"));      
+			user.setNationalId((String) body.get("nationalId"));  
 
 			String validationError = validateUser(user);
 			if (validationError != null) {
@@ -19,7 +56,7 @@ public class RegistrationController {
 				return;
 			}
 
-			if (UserRepository.userExists(user.getUsername())) {
+			if (UserRepository.userExists(user.getUserName())) {
 				ctx.status(409).json(createResponse(false, "Username already exists"));
 				return;
 			}
@@ -27,8 +64,8 @@ public class RegistrationController {
 			boolean saved = UserRepository.saveUser(user);
 
 			if (saved) {
-				System.out.println("✅ New user registered: " + user.getUsername());
-				ctx.status(201).json(createResponse(true, "Registration successful! Welcome " + user.getUsername()));
+				System.out.println("✅ New user registered: " + user.getUserName());
+				ctx.status(201).json(createResponse(true, "Registration successful! Welcome " + user.getUserName()));
 			} else {
 				ctx.status(500).json(createResponse(false, "Failed to save user to database"));
 			}
@@ -41,13 +78,13 @@ public class RegistrationController {
 	}
 
 	private static String validateUser(User user) {
-		if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {
+		if (user.getUserName() == null || user.getUserName().trim().isEmpty()) {
 			return "Username is required";
 		}
 		if (user.getLastName() == null || user.getLastName().trim().isEmpty()) {
 			return "Last name is required";
 		}
-		if (user.getPhoneNumber() == null || user.getPhoneNumber().trim().isEmpty()) {
+		if (user.getPhoneNo() == null || user.getPhoneNo().trim().isEmpty()) {
 			return "Phone number is required";
 		}
 		if (user.getPassword() == null || user.getPassword().length() < 6) {
@@ -57,24 +94,25 @@ public class RegistrationController {
 			return "National ID is required";
 		}
 
-		String accountType = user.getAccountType();
-		if (accountType.equals("buyer")) {
-			if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+		if (user instanceof Buyer) {
+			Buyer buyer = (Buyer) user;
+			if (buyer.getEmail() == null || buyer.getEmail().trim().isEmpty()) {
 				return "Email is required for buyers";
 			}
-			if (user.getDeliveryLocation() == null || user.getDeliveryLocation().trim().isEmpty()) {
+			if (buyer.getDeliveryLocation() == null || buyer.getDeliveryLocation().trim().isEmpty()) {
 				return "Delivery location is required for buyers";
 			}
 		}
 
-		if (accountType.equals("seller")) {
-			if (user.getBusinessName() == null || user.getBusinessName().trim().isEmpty()) {
+		if (user instanceof Seller) {
+			Seller seller = (Seller) user;
+			if (seller.getBusinessName() == null || seller.getBusinessName().trim().isEmpty()) {
 				return "Business name is required for sellers";
 			}
-			if (user.getBusinessRegNumber() == null || user.getBusinessRegNumber().trim().isEmpty()) {
+			if (seller.getBusinessRegNumber() == null || seller.getBusinessRegNumber().trim().isEmpty()) {
 				return "Business registration number is required for sellers";
 			}
-			if (user.getBusinessLocation() == null || user.getBusinessLocation().trim().isEmpty()) {
+			if (seller.getBusinessLocation() == null || seller.getBusinessLocation().trim().isEmpty()) {
 				return "Business location is required for sellers";
 			}
 		}

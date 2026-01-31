@@ -595,7 +595,7 @@ function createProductCard(product) {
     
     const imageUrl = product.images && product.images.length > 0 
         ? product.images[0] 
-        : 'https:
+        : 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400';
     
     
     const inStock = product.quantity > 0;

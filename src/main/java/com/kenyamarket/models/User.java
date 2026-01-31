@@ -1,21 +1,14 @@
 package com.kenyamarket.models;
 
-public class User {
-	private int userId;
-	private String accountType;
-	private String userName;
-	private String lastName;
-	private String email;
-	private String phoneNo;
-	private String password;
-	private String nationalId;
-
-	private String deliveryLocation;
-
-	private String businessName;
-	private String businessRegNumber;
-	private String businessLocation;
-
+public abstract class User  {
+    private int userId;
+    private String userName;
+    private String lastName;
+    private String email;
+    private String phoneNo;
+    private String password;
+    private String nationalId;
+	
 	public User() {
 	}
 
@@ -26,25 +19,18 @@ public class User {
 		this.userId = userId;
 	}
 
-	public String getAccountType() {
-		return accountType;
-	}
-	public void setAccountType(String accountType) {
-		this.accountType = accountType;
-	}
+	// public String getAccountType() {
+	// 	return accountType;
+	// }
+	// public void setAccountType(String accountType) {
+	// 	this.accountType = accountType;
+	// }
 
 	public String getUserName() {
 		return userName;
 	}
 	public void setUserName(String userName) {
 		this.userName = userName;
-	}
-
-	public String getUsername() {
-		return userName;
-	}
-	public void setUsername(String username) {
-		this.userName = username;
 	}
 
 	public String getLastName() {
@@ -78,6 +64,8 @@ public class User {
 	public String getPassword() {
 		return password;
 	}
+	
+	// Only get password but not set it publicly
 	public void setPassword(String password) {
 		this.password = password;
 	}
@@ -89,33 +77,7 @@ public class User {
 		this.nationalId = nationalId;
 	}
 
-	public String getDeliveryLocation() {
-		return deliveryLocation;
-	}
-	public void setDeliveryLocation(String deliveryLocation) {
-		this.deliveryLocation = deliveryLocation;
-	}
-
-	public String getBusinessName() {
-		return businessName;
-	}
-	public void setBusinessName(String businessName) {
-		this.businessName = businessName;
-	}
-
-	public String getBusinessRegNumber() {
-		return businessRegNumber;
-	}
-	public void setBusinessRegNumber(String businessRegNumber) {
-		this.businessRegNumber = businessRegNumber;
-	}
-
-	public String getBusinessLocation() {
-		return businessLocation;
-	}
-	public void setBusinessLocation(String businessLocation) {
-		this.businessLocation = businessLocation;
-	}
+	public abstract String getAccountType();
 
 	@Override
 	public String toString() {

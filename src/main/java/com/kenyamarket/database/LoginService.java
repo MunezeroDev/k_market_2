@@ -1,6 +1,9 @@
 package com.kenyamarket.database;
 
 import com.kenyamarket.models.User;
+import com.kenyamarket.models.Buyer;
+import com.kenyamarket.models.Seller;
+import com.kenyamarket.models.Admin;
 import com.kenyamarket.models.LoginResult;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,8 +18,12 @@ public class LoginService {
 		Connection conn = null;
 		PreparedStatement userStmt = null;
 		PreparedStatement roleStmt = null;
+		PreparedStatement buyerStmt = null;
+		PreparedStatement sellerStmt = null;
 		ResultSet userRs = null;
 		ResultSet roleRs = null;
+		ResultSet buyerRs = null;
+		ResultSet sellerRs = null;
 
 		try {
 			conn = DatabaseConnection.getConnection();
@@ -28,27 +35,64 @@ public class LoginService {
 			userRs = userStmt.executeQuery();
 
 			if (!userRs.next()) {
-
 				return new LoginResult(false, null, null, "Invalid username or password");
 			}
 
-			User user = new User();
-			user.setUserId(userRs.getInt("userId"));
-			user.setUserName(userRs.getString("userName"));
-			user.setLastName(userRs.getString("lastName"));
-			user.setEmail(userRs.getString("email"));
-			user.setPhoneNo(userRs.getString("phoneNo"));
-			user.setNationalId(userRs.getString("nationalId"));
+			int userId = userRs.getInt("userId");
 
 			String roleQuery = "SELECT role FROM UserRole WHERE userId = ?";
 			roleStmt = conn.prepareStatement(roleQuery);
-			roleStmt.setInt(1, user.getUserId());
+			roleStmt.setInt(1, userId);
 			roleRs = roleStmt.executeQuery();
 
 			List<String> roles = new ArrayList<>();
 			while (roleRs.next()) {
 				roles.add(roleRs.getString("role"));
 			}
+
+			User user;
+
+			if (roles.contains("buyer")) {
+				Buyer buyer = new Buyer();
+				
+				String buyerQuery = "SELECT deliveryLocation FROM BuyerProfile WHERE userId = ?";
+				buyerStmt = conn.prepareStatement(buyerQuery);
+				buyerStmt.setInt(1, userId);
+				buyerRs = buyerStmt.executeQuery();
+				
+				if (buyerRs.next()) {
+					buyer.setDeliveryLocation(buyerRs.getString("deliveryLocation"));
+				}
+				
+				user = buyer;
+			} 
+			else if (roles.contains("seller")) {
+				Seller seller = new Seller();
+				
+				String sellerQuery = "SELECT businessName, businessRegNumber, businessLocation FROM SellerProfile WHERE userId = ?";
+				sellerStmt = conn.prepareStatement(sellerQuery);
+				sellerStmt.setInt(1, userId);
+				sellerRs = sellerStmt.executeQuery();
+				
+				if (sellerRs.next()) {
+					seller.setBusinessName(sellerRs.getString("businessName"));
+					seller.setBusinessRegNumber(sellerRs.getString("businessRegNumber"));
+					seller.setBusinessLocation(sellerRs.getString("businessLocation"));
+				}
+				
+				user = seller;
+			} 
+			else {
+				user = new Admin();
+			}
+
+			user.setUserId(userId);
+			// user.setUserName(userRs.getString("userName"));
+			user.setUserName(userRs.getString("userName"));
+			user.setLastName(userRs.getString("lastName"));
+			user.setEmail(userRs.getString("email"));
+			user.setPhoneNo(userRs.getString("phoneNo"));
+			user.setNationalId(userRs.getString("nationalId"));
 
 			return new LoginResult(true, user, roles, "Login successful");
 
@@ -57,16 +101,15 @@ public class LoginService {
 			e.printStackTrace();
 			return new LoginResult(false, null, null, "Database error occurred");
 		} finally {
-
 			try {
-				if (roleRs != null)
-					roleRs.close();
-				if (userRs != null)
-					userRs.close();
-				if (roleStmt != null)
-					roleStmt.close();
-				if (userStmt != null)
-					userStmt.close();
+				if (sellerRs != null) sellerRs.close();
+				if (buyerRs != null) buyerRs.close();
+				if (roleRs != null) roleRs.close();
+				if (userRs != null) userRs.close();
+				if (sellerStmt != null) sellerStmt.close();
+				if (buyerStmt != null) buyerStmt.close();
+				if (roleStmt != null) roleStmt.close();
+				if (userStmt != null) userStmt.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
