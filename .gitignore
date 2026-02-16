@@ -50,7 +50,6 @@ sql_workbench.md
 remove_comments.py
 
 # Images
-*.png
 *.jpg
 *.jpeg
 *.gif
