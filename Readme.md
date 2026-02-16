@@ -53,9 +53,9 @@ kenyamarket/
                     └── SessionManager.java
 ```
 
-Tech Stack
-Backend: Java 17+ with Javalin framework
-Frontend: HTML, CSS, JavaScript
-Database: MySQL 8.0+
-Build Tool: Maven
-Runtime: Bun (for frontend asset management)
+## Tech Stack
+- Backend: Java 17+ with Javalin framework
+- Frontend: HTML, CSS, JavaScript
+- Database: MySQL 8.0+
+- Build Tool: Maven
+- Runtime: Bun (for frontend asset management)
