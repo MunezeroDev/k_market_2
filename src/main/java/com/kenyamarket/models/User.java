@@ -19,13 +19,6 @@ public abstract class User  {
 		this.userId = userId;
 	}
 
-	// public String getAccountType() {
-	// 	return accountType;
-	// }
-	// public void setAccountType(String accountType) {
-	// 	this.accountType = accountType;
-	// }
-
 	public String getUserName() {
 		return userName;
 	}

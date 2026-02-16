@@ -87,7 +87,6 @@ public class LoginService {
 			}
 
 			user.setUserId(userId);
-			// user.setUserName(userRs.getString("userName"));
 			user.setUserName(userRs.getString("userName"));
 			user.setLastName(userRs.getString("lastName"));
 			user.setEmail(userRs.getString("email"));

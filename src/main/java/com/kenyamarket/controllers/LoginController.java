@@ -42,6 +42,8 @@ public class LoginController {
 		}
 	}
 
+
+
 	public void handleLogout(Context ctx) {
 		String sessionId = ctx.cookie("sessionId");
 
@@ -54,4 +56,8 @@ public class LoginController {
 		ctx.status(200).json("{\"success\": true, \"message\": \"Logged out successfully\"}");
 		System.out.println("👋 User logged out");
 	}
+
+
+
+
 }
